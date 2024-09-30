@@ -7,4 +7,5 @@ GPIO.setup(17, GPIO.OUT)
 
 
 GPIO.output(17,GPIO.LOW)
-time.sleep(5)
+
+GPIO.cleanup()
