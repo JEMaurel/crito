@@ -1,4 +1,4 @@
-#pull up / down / etc ver commits 
+#pull up / down / segun la conexion . el script es el mismo 
 #https://www.youtube.com/watch?v=0OYtR8UdZQk&list=PLGs0VKk2DiYxdMjCJmcP6jt4Yw6OHK85O&index=13
 
 import RPi.GPIO as GPIO
