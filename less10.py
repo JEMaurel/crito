@@ -22,14 +22,15 @@ try:
 		
 		if b1StateOld==0 and b1State==1:
 			DC= DC/1.585
-			print('dim event')
+			print ('dim event')
 		if b2StateOld==0 and b2State==1:
 			DC=DC*1.585
-			print('bright event')
+			print ('bright event')
 		if DC>99:
 			DC=99
-		if DC<0:
-			DC=0
+		if DC<0.989:
+			DC=0.989
+		print (DC)
 		myPWM.ChangeDutyCycle(int(DC))
 		b1StateOld=b1State
 		b2StateOld=b2State
@@ -37,5 +38,5 @@ try:
 except KeyboardInterrupt :
 	myPWM.stop()
 	GPIO.cleanup()
-	print('GPIO  GOOD TO GO' )
+	print ('GPIO  GOOD TO GO' )
 
