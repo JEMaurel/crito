@@ -21,16 +21,16 @@ try:
 		b2State=GPIO.input(b2)
 		
 		if b1StateOld==0 and b1State==1:
-			DC= DC - 10
+			DC= DC/1.585
 			print('dim event')
 		if b2StateOld==0 and b2State==1:
-			DC=DC + 10
+			DC=DC*1.585
 			print('bright event')
 		if DC>99:
 			DC=99
 		if DC<0:
 			DC=0
-		myPWM.ChangeDutyCycle(DC)
+		myPWM.ChangeDutyCycle(int(DC))
 		b1StateOld=b1State
 		b2StateOld=b2State
 		sleep(dt)  
