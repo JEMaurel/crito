@@ -1,3 +1,5 @@
+
+
 import RPi.GPIO as GPIO
 import time
 
@@ -10,15 +12,21 @@ GPIO.setup(rPin, GPIO.OUT)
 GPIO.setup(gPin, GPIO.OUT)
 GPIO.setup(bPin, GPIO.OUT)
 
+# Configurar PWM para los pines de los LEDs
+rPWM = GPIO.PWM(rPin, 1000)  # Frecuencia de 1 kHz
+gPWM = GPIO.PWM(gPin, 1000)
+bPWM = GPIO.PWM(bPin, 1000)
+
+# Inicializar PWM con duty cycle al 0% (apagado)
+rPWM.start(0)
+gPWM.start(0)
+bPWM.start(0)
+
 rBut = 11
 gBut = 13
 bBut = 15
 
 # Estados iniciales de los LEDs y botones
-rLEDstate = 0
-gLEDstate = 0
-bLEDstate = 0
-
 rButState = 1
 gButState = 1
 bButState = 1
@@ -26,6 +34,11 @@ bButState = 1
 rButStateOld = 1
 gButStateOld = 1
 bButStateOld = 1
+
+# Contadores de intensidad (de 0 a 10)
+rIntensity = 0
+gIntensity = 0
+bIntensity = 0
 
 GPIO.setup(rBut, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(gBut, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -39,21 +52,21 @@ try:
         bButState = GPIO.input(bBut)
 
         # Detección de borde (de 1 a 0) para el botón rojo
-        if rButState == 0 and rButStateOld == 1:  # Se detecta que el botón ha sido presionado
-            rLEDstate = not rLEDstate  # Cambiar el estado del LED
-            GPIO.output(rPin, rLEDstate)
+        if rButState == 0 and rButStateOld == 1:
+            rIntensity = (rIntensity + 1) % 11  # Incrementar intensidad y reiniciar a 0 después de 10
+            rPWM.ChangeDutyCycle(rIntensity * 10)  # Convertir la intensidad a ciclo de trabajo (0-100%)
             time.sleep(0.2)  # Pausa para evitar múltiples detecciones
 
         # Detección de borde (de 1 a 0) para el botón verde
         if gButState == 0 and gButStateOld == 1:
-            gLEDstate = not gLEDstate
-            GPIO.output(gPin, gLEDstate)
+            gIntensity = (gIntensity + 1) % 11
+            gPWM.ChangeDutyCycle(gIntensity * 10)
             time.sleep(0.2)
 
         # Detección de borde (de 1 a 0) para el botón azul
         if bButState == 0 and bButStateOld == 1:
-            bLEDstate = not bLEDstate
-            GPIO.output(bPin, bLEDstate)
+            bIntensity = (bIntensity + 1) % 11
+            bPWM.ChangeDutyCycle(bIntensity * 10)
             time.sleep(0.2)
 
         # Actualizar los estados anteriores de los botones
@@ -62,5 +75,7 @@ try:
         bButStateOld = bButState
 
 except KeyboardInterrupt:
+    rPWM.stop()
+    gPWM.stop()
+    bPWM.stop()
     GPIO.cleanup()
-
